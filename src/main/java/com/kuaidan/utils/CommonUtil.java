@@ -271,7 +271,7 @@ public class CommonUtil {
 		List<T> ts = (List<T>) JSONArray.parseArray(jsonString, clazz);
 		return ts;
 	}
-	public static String getAidianmaoAdminId(String token){
+	public static String getAdminId(String token){
 		return token.substring(token.lastIndexOf("_")+1);
 	}
 }

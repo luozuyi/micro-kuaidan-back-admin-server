@@ -128,6 +128,7 @@ public class AdminServiceImpl extends BaseServiceImpl<Admin,String> implements A
         String code = Constants.FAIL;
         String msg = "初始化";
         try {
+            String adminIdToken = CommonUtil.getAdminId(token);
             if(StringUtils.isBlank(adminId)){
                 code = "-3";
                 msg = "主键id不能为空";
@@ -149,6 +150,9 @@ public class AdminServiceImpl extends BaseServiceImpl<Admin,String> implements A
             }else if(!isDelFlag.equals(Constants.AdminIsDisable.DISABLE.getIsDisable()) && !isDelFlag.equals(Constants.AdminIsDisable.UNDISABLE.getIsDisable())){
                 code = "-9";
                 msg = "请正确选择是否禁用";
+            }else if(!adminId.equals(adminIdToken)){
+                code = "-11";
+                msg = "不是当前用户";
             }else{
                 Admin admin_db = adminMapper.selectByPrimaryKey(adminId);
                 if(admin_db == null){
