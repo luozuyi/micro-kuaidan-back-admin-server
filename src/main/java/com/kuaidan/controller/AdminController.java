@@ -53,8 +53,8 @@ public class AdminController {
      * @return
      */
     @PatchMapping(value = "v1/auth/admins")
-    public Result update(String adminId, String password, String roleId, String isDisable, String surePassword) {
-        return adminService.update(adminId, password, roleId, isDisable, surePassword);
+    public Result update(String adminId, String password, String roleId, String isDisable, String surePassword,@CookieValue String kuaidanAdminToken) {
+        return adminService.update(adminId, password, roleId, isDisable, surePassword,kuaidanAdminToken);
     }
 
     /**

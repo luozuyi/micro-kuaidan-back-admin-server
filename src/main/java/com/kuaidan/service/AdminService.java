@@ -31,7 +31,7 @@ public interface AdminService extends BaseService<Admin,String>{
      * @param surePassword 确认密码
      * @return
      */
-    Result update(String adminId, String password, String roleId, String isDelFlag, String surePassword);
+    Result update(String adminId, String password, String roleId, String isDelFlag, String surePassword,String token);
 
     /**
      * 启用

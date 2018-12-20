@@ -14,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.interceptor.TransactionAspectSupport;
+import org.springframework.web.client.RestTemplate;
 
 import java.util.Date;
 import java.util.Map;
@@ -25,6 +26,8 @@ public class AdminServiceImpl extends BaseServiceImpl<Admin,String> implements A
     private AdminMapper adminMapper;
     @Autowired
     private SysRoleMapper sysRoleMapper;
+    @Autowired
+    private RestTemplate restTemplate;
     @Override
     public Result addAdmin(String adminName, String qq, String password, String roleId, String isDelFlag, String surePassword) {
         Result result = new Result();
@@ -120,7 +123,7 @@ public class AdminServiceImpl extends BaseServiceImpl<Admin,String> implements A
     }
 
     @Override
-    public Result update(String adminId, String password, String roleId, String isDelFlag, String surePassword) {
+    public Result update(String adminId, String password, String roleId, String isDelFlag, String surePassword,String token) {
         Result result = new Result();
         String code = Constants.FAIL;
         String msg = "初始化";
@@ -159,8 +162,15 @@ public class AdminServiceImpl extends BaseServiceImpl<Admin,String> implements A
                 admin_db.setRoleId(roleId);
                 admin_db.setDelFlag(isDelFlag);
                 adminMapper.updateByPrimaryKeySelective(admin_db);
-                code = Constants.SUCCESS;
-                msg = "修改成功";
+                Result response  = restTemplate.getForEntity("http://micro-kuaidan-zuul-server/back-sso/v1/admins/logout?token="+token,Result.class).getBody();
+                if("0".equals(response.getCode())){
+                    code = Constants.SUCCESS;
+                    msg = "修改成功";
+                }else {
+                    code = "-11";
+                    msg = "修改失败";
+                    TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
+                }
             }
         } catch (Exception e) {
             e.printStackTrace();
