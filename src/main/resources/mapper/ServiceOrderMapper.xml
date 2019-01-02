@@ -41,7 +41,7 @@
   </select>
 
   <!--服务订单详情-->
-  <select id="selectDetail" resultType="java.util.Map" parameterType="java.util.Map">
+  <select id="selectDetail" resultType="java.util.Map" parameterType="java.lang.String">
     SELECT
       ckso.service_order_number AS serviceOrderNumber,
       cksoa.member_name AS memberName,
@@ -58,16 +58,15 @@
       ((ckso.price+cksod.discount_money)/a.all_box_count) AS boxMoney,
       date_format(ckso.create_time ,'%Y-%m-%d %H:%i:%s' ) AS showTime
       FROM cb_kuaidan_service_order ckso
-      LEFT JOIN cb_kuaidan_service_order_address cksoa ON ckso.address_id=cksoa.id
-      LEFT JOIN cb_kuaidan_service_order_discount cksod ON cksod.service_order_id=ckso.id
+      LEFT JOIN cb_kuaidan_service_order_address cksoa ON ckso.address_id=cksoa.id AND cksoa.del_flag="0"
+      LEFT JOIN cb_kuaidan_service_order_discount cksod ON cksod.service_order_id=ckso.id AND cksod.del_flag="0"
       LEFT JOIN (SELECT service_order_id, COUNT(0) AS all_box_count FROM cb_kuaidan_box_order WHERE del_flag="0"
                 GROUP BY service_order_id) AS a ON a.service_order_id=ckso.id
       LEFT JOIN (SELECT service_order_id, COUNT(0) AS has_send_box_ FROM cb_kuaidan_box_order WHERE del_flag="0"
                 and status="1" GROUP BY service_order_id) AS b ON b.service_order_id=ckso.id
       WHERE ckso.id=#{id}
-      AND ckso.status=#{status}
       AND ckso.del_flag="0"
-      AND cksoa.del_flag="0" AND cksod.del_flag="0"
+
   </select>
   <!--多条件查询服务订单列表-->
   <select id="selectOrderSelection" resultType="java.util.Map" parameterType="com.kuaidan.entity.ServiceOrder">

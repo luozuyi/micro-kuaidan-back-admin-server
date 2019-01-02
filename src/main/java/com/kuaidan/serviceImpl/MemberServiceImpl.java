@@ -80,7 +80,7 @@ public class MemberServiceImpl extends BaseServiceImpl<Member,String> implements
 
                     /*订单总额*/
                     BigDecimal selectTotalPrice = serviceOrderMapper.selectTotalPrice(id);
-                    data.put("selectTotalPrice",selectTotalPrice);
+                    data.put("totalPrice",selectTotalPrice);
 
                     result.setData(data);
                     code = Constants.SUCCESS;

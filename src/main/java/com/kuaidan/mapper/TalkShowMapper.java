@@ -11,6 +11,7 @@ import java.util.Map;
 @Mapper
 @Repository
 public interface TalkShowMapper {
+    Integer selectOverheadCount();
 
     List<ModelMap> selectAll(Map<String,Object> params);
 
