@@ -6,7 +6,7 @@ import org.springframework.stereotype.Repository;
 
 @Mapper
 @Repository
-public interface MemberMapper {
+public interface MemberMapper extends BaseMapper<Member,String>{
     int deleteByPrimaryKey(String id);
 
     int insert(Member record);
@@ -18,4 +18,6 @@ public interface MemberMapper {
     int updateByPrimaryKeySelective(Member record);
 
     int updateByPrimaryKey(Member record);
+
+    Integer selectAllMemberCount();
 }

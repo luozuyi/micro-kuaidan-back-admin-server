@@ -1,0 +1,197 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.kuaidan.mapper.BoxOrderMapper" >
+  <resultMap id="BaseResultMap" type="com.kuaidan.entity.BoxOrder" >
+    <id column="id" property="id" jdbcType="VARCHAR" />
+    <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+    <result column="del_flag" property="delFlag" jdbcType="VARCHAR" />
+    <result column="service_order_id" property="serviceOrderId" jdbcType="VARCHAR" />
+    <result column="status" property="status" jdbcType="VARCHAR" />
+    <result column="send_time" property="sendTime" jdbcType="TIMESTAMP" />
+    <result column="box_config_id" property="boxConfigId" jdbcType="VARCHAR" />
+    <result column="box_order_number" property="boxOrderNumber" jdbcType="VARCHAR" />
+    <result column="send_person" property="sendPerson" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, create_time, del_flag, service_order_id, status, send_time, box_config_id, box_order_number,send_person
+  </sql>
+
+  <!--查询距离当前十天的已发货盒子订单-->
+  <select id="selectBoxOrderBeforeTenDays" resultMap="BaseResultMap">
+    SELECT
+    <include refid="Base_Column_List" />
+    from cb_kuaidan_box_order
+    where DATEDIFF(NOW(),send_time)=10
+    AND status="1"
+    AND del_flag="0"
+  </select>
+
+  <!--多条件查询盒子订单-->
+  <select id="selectSelection" resultType="java.util.Map" parameterType="com.kuaidan.entity.BoxOrder">
+    SELECT
+      ckbo.id AS id,
+      ckbo.box_order_number AS boxOrderNumber,
+      ckbl.express_number AS expressNumber,
+      ckbo.status AS status,
+      date_format(ckbo.send_time ,'%Y-%m-%d' ) AS sendTime
+      FROM cb_kuaidan_box_order ckbo
+      LEFT JOIN cb_kuaidan_platform_box_config ckpbc ON ckpbc.id=ckbo.box_config_id
+      LEFT JOIN cb_kuaidan_box_logistics ckbl ON ckbl.box_order_id=ckbo.id
+      <where>
+        <if test="boxOrderNumber!=null and boxOrderNumber!=''">AND ckbo.box_order_number =#{boxOrderNumber}</if>
+        <if test="expressNumber!=null and expressNumber!=''">AND ckbl.express_number =#{expressNumber}</if>
+        <if test="status!=null and status!=''">AND ckbo.status =#{status}</if>
+        <if test="startCTime!=null and startCTime!=''">
+          <![CDATA[   and DATE_FORMAT(ckbo.create_time, '%Y-%m-%d')>=  DATE_FORMAT(#{startCTime}, '%Y-%m-%d')   ]]>
+        </if>
+        <if test="endCTime!=null and endCTime!=''">
+          <![CDATA[  and DATE_FORMAT(ckbo.create_time, '%Y-%m-%d') <= DATE_FORMAT(#{endCTime}, '%Y-%m-%d')    ]]>
+        </if>
+        AND ckbo.del_flag="0" AND ckpbc.del_flag="0" AND ckbl.del_flag="0"
+      </where>
+  </select>
+
+  <!--盒子订单详情-->
+  <select id="selectBoxOrderDetail" parameterType="java.lang.String" resultType="java.util.Map">
+    SELECT
+      ckbo.box_order_number  AS boxOrderNumber,
+      ckso.service_order_number AS serviceOrderNumber,
+      cksoa.member_telephone AS memberTelephone,
+      ckpbc.price AS price,
+      ckbo.status AS status,
+      ckbo.send_person AS sendPerson,
+      ckbl.express_company AS expressCompany,
+      ckbl.express_number AS expressNumber,
+      date_format(ckbo.send_time ,'%Y-%m-%d' ) AS sendTime
+      FROM cb_kuaidan_box_order ckbo
+      LEFT JOIN cb_kuaidan_service_order ckso ON ckso.id=ckbo.service_order_id
+      LEFT JOIN cb_kuaidan_platform_box_config ckpbc ON ckpbc.id=ckbo.box_config_id
+      LEFT JOIN cb_kuaidan_service_order_address cksoa ON cksoa.id=ckso.address_id
+      LEFT JOIN  cb_kuaidan_box_logistics ckbl ON ckbl.box_order_id=ckbo.id
+      WHERE ckbo.id=#{id}
+      AND ckbo.del_flag="0" AND ckso.del_flag="0" AND ckpbc.del_flag="0"
+      AND cksoa.del_flag="0" AND ckbl.del_flag="0"
+  </select>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from cb_kuaidan_box_order
+    where id = #{id,jdbcType=VARCHAR}
+    AND del_flag="0"
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
+    delete from cb_kuaidan_box_order
+    where id = #{id,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.kuaidan.entity.BoxOrder" >
+    insert into cb_kuaidan_box_order (id, create_time, del_flag, 
+      service_order_id, status, send_time, 
+      box_config_id, box_order_number,send_person)
+    values (#{id,jdbcType=VARCHAR}, #{createTime,jdbcType=TIMESTAMP}, #{delFlag,jdbcType=VARCHAR}, 
+      #{serviceOrderId,jdbcType=VARCHAR}, #{status,jdbcType=VARCHAR}, #{sendTime,jdbcType=TIMESTAMP}, 
+      #{boxConfigId,jdbcType=VARCHAR}, #{boxOrderNumber,jdbcType=VARCHAR},#{sendPerson,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.kuaidan.entity.BoxOrder" >
+    insert into cb_kuaidan_box_order
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="createTime != null" >
+        create_time,
+      </if>
+      <if test="delFlag != null" >
+        del_flag,
+      </if>
+      <if test="serviceOrderId != null" >
+        service_order_id,
+      </if>
+      <if test="status != null" >
+        status,
+      </if>
+      <if test="sendTime != null" >
+        send_time,
+      </if>
+      <if test="boxConfigId != null" >
+        box_config_id,
+      </if>
+      <if test="boxOrderNumber != null" >
+        box_order_number,
+      </if>
+      <if test="sendPerson != null" >
+        send_person,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null" >
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="delFlag != null" >
+        #{delFlag,jdbcType=VARCHAR},
+      </if>
+      <if test="serviceOrderId != null" >
+        #{serviceOrderId,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null" >
+        #{status,jdbcType=VARCHAR},
+      </if>
+      <if test="sendTime != null" >
+        #{sendTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="boxConfigId != null" >
+        #{boxConfigId,jdbcType=VARCHAR},
+      </if>
+      <if test="boxOrderNumber != null" >
+        #{boxOrderNumber,jdbcType=VARCHAR},
+      </if>
+      <if test="sendPerson != null" >
+        #{sendPerson,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.kuaidan.entity.BoxOrder" >
+    update cb_kuaidan_box_order
+    <set >
+      <if test="createTime != null" >
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="delFlag != null" >
+        del_flag = #{delFlag,jdbcType=VARCHAR},
+      </if>
+      <if test="serviceOrderId != null" >
+        service_order_id = #{serviceOrderId,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null" >
+        status = #{status,jdbcType=VARCHAR},
+      </if>
+      <if test="sendTime != null" >
+        send_time = #{sendTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="boxConfigId != null" >
+        box_config_id = #{boxConfigId,jdbcType=VARCHAR},
+      </if>
+      <if test="boxOrderNumber != null" >
+        box_order_number = #{boxOrderNumber,jdbcType=VARCHAR},
+      </if>
+      <if test="sendPerson != null" >
+        send_Person = #{sendPerson,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.kuaidan.entity.BoxOrder" >
+    update cb_kuaidan_box_order
+    set create_time = #{createTime,jdbcType=TIMESTAMP},
+      del_flag = #{delFlag,jdbcType=VARCHAR},
+      service_order_id = #{serviceOrderId,jdbcType=VARCHAR},
+      status = #{status,jdbcType=VARCHAR},
+      send_time = #{sendTime,jdbcType=TIMESTAMP},
+      box_config_id = #{boxConfigId,jdbcType=VARCHAR},
+      box_order_number = #{boxOrderNumber,jdbcType=VARCHAR},
+      send_Person = #{sendPerson,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=VARCHAR}
+  </update>
+</mapper>

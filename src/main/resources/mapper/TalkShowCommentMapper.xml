@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.kuaidan.mapper.TalkShowCommentMapper" >
+  <resultMap id="BaseResultMap" type="com.kuaidan.entity.TalkShowComment" >
+    <id column="id" property="id" jdbcType="VARCHAR" />
+    <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+    <result column="del_flag" property="delFlag" jdbcType="VARCHAR" />
+    <result column="is_start_using" property="isStartUsing" jdbcType="VARCHAR" />
+    <result column="content" property="content" jdbcType="VARCHAR" />
+    <result column="talk_show_id" property="talkShowId" jdbcType="VARCHAR" />
+    <result column="member_id" property="memberId" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, create_time, del_flag, is_start_using, content, talk_show_id, member_id
+  </sql>
+
+  <select id="selectAllComment" parameterType="java.util.Map" resultType="java.util.Map">
+    SELECT a.id,a.talk_show_id as takeShowId,c.nick_name as nickName,d.is_support as isSupport,
+   a.content,a.is_start_using as isStartUsing,a.create_time as createTime
+   FROM cb_kuaidan_talk_show_comment a
+   LEFT JOIN cb_kuaidan_talk_show b on b.id = a.talk_show_id
+   LEFT JOIN cb_kuaidan_member c on c.id = b.member_id
+   LEFT JOIN cb_kuaidan_talk_show_opinion d on d.talk_show_id = a.talk_show_id and d.member_id = a.member_id
+   where a.talk_show_id = #{talkShowId,jdbcType=VARCHAR}
+   <if test="nickName != null and nickName != ''">
+     and c.nick_name =  #{nickName,jdbcType=VARCHAR}
+   </if>
+   <if test="isSupport != null and isSupport != ''">
+     and d.is_support = #{isSupport,jdbcType=VARCHAR}
+   </if>
+   <if test="isStartUsing != null and isStartUsing !=''">
+     and a.is_start_using = #{isStartUsing,jdbcType=VARCHAR}
+   </if>
+    order by a.create_time desc
+  </select>
+
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from cb_kuaidan_talk_show_comment
+    where id = #{id,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
+    delete from cb_kuaidan_talk_show_comment
+    where id = #{id,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.kuaidan.entity.TalkShowComment" >
+    insert into cb_kuaidan_talk_show_comment (id, create_time, del_flag, 
+      is_start_using, content, talk_show_id, 
+      member_id)
+    values (#{id,jdbcType=VARCHAR}, #{createTime,jdbcType=TIMESTAMP}, #{delFlag,jdbcType=VARCHAR}, 
+      #{isStartUsing,jdbcType=VARCHAR}, #{content,jdbcType=VARCHAR}, #{talkShowId,jdbcType=VARCHAR}, 
+      #{memberId,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.kuaidan.entity.TalkShowComment" >
+    insert into cb_kuaidan_talk_show_comment
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="createTime != null" >
+        create_time,
+      </if>
+      <if test="delFlag != null" >
+        del_flag,
+      </if>
+      <if test="isStartUsing != null" >
+        is_start_using,
+      </if>
+      <if test="content != null" >
+        content,
+      </if>
+      <if test="talkShowId != null" >
+        talk_show_id,
+      </if>
+      <if test="memberId != null" >
+        member_id,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null" >
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="delFlag != null" >
+        #{delFlag,jdbcType=VARCHAR},
+      </if>
+      <if test="isStartUsing != null" >
+        #{isStartUsing,jdbcType=VARCHAR},
+      </if>
+      <if test="content != null" >
+        #{content,jdbcType=VARCHAR},
+      </if>
+      <if test="talkShowId != null" >
+        #{talkShowId,jdbcType=VARCHAR},
+      </if>
+      <if test="memberId != null" >
+        #{memberId,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.kuaidan.entity.TalkShowComment" >
+    update cb_kuaidan_talk_show_comment
+    <set >
+      <if test="createTime != null" >
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="delFlag != null" >
+        del_flag = #{delFlag,jdbcType=VARCHAR},
+      </if>
+      <if test="isStartUsing != null" >
+        is_start_using = #{isStartUsing,jdbcType=VARCHAR},
+      </if>
+      <if test="content != null" >
+        content = #{content,jdbcType=VARCHAR},
+      </if>
+      <if test="talkShowId != null" >
+        talk_show_id = #{talkShowId,jdbcType=VARCHAR},
+      </if>
+      <if test="memberId != null" >
+        member_id = #{memberId,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.kuaidan.entity.TalkShowComment" >
+    update cb_kuaidan_talk_show_comment
+    set create_time = #{createTime,jdbcType=TIMESTAMP},
+      del_flag = #{delFlag,jdbcType=VARCHAR},
+      is_start_using = #{isStartUsing,jdbcType=VARCHAR},
+      content = #{content,jdbcType=VARCHAR},
+      talk_show_id = #{talkShowId,jdbcType=VARCHAR},
+      member_id = #{memberId,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=VARCHAR}
+  </update>
+</mapper>

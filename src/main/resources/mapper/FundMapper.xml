@@ -1,0 +1,168 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.kuaidan.mapper.FundMapper" >
+  <resultMap id="BaseResultMap" type="com.kuaidan.entity.Fund" >
+    <id column="id" property="id" jdbcType="VARCHAR" />
+    <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+    <result column="del_flag" property="delFlag" jdbcType="VARCHAR" />
+    <result column="money" property="money" jdbcType="DECIMAL" />
+    <result column="type" property="type" jdbcType="VARCHAR" />
+    <result column="member_id" property="memberId" jdbcType="VARCHAR" />
+    <result column="serial_number" property="serialNumber" jdbcType="VARCHAR" />
+    <result column="status" property="status" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, create_time, del_flag, money, type, member_id, serial_number,status
+  </sql>
+
+  <!--总金额-->
+  <select id="sumMoney" resultType="java.math.BigDecimal">
+    SELECT SUM(money)
+      FROM cb_kuaidan_fund
+      WHERE del_flag="0"
+  </select>
+
+  <!--多条件筛选资金管理-->
+  <select id="selectFundSelection" parameterType="com.kuaidan.entity.Fund" resultType="java.util.Map">
+    SELECT
+      ckf.id AS id,
+      ckm.nick_name AS nickName,
+      ckf.serial_number AS serialNumber,
+      ckf.money AS money,
+      ckf.status AS status,
+      date_format(ckf.create_time ,'%Y-%m-%d %H:%i:%s' ) AS showTime
+      FROM cb_kuaidan_fund ckf
+      LEFT JOIN cb_kuaidan_member ckm ON ckm.id=ckf.member_id
+      <where>
+        <if test="nickName!=null and nickName!=''">AND ckm.nick_name =#{nickName}</if>
+        <if test="status!=null and status!=''">AND ckf.status =#{status}</if>
+        <if test="serialNumber!=null and serialNumber!=''">AND ckf.serial_number =#{serialNumber}</if>
+        <if test="startCTime!=null and startCTime!=''">
+          <![CDATA[   and DATE_FORMAT(ckf.create_time, '%Y-%m-%d')>=  DATE_FORMAT(#{startCTime}, '%Y-%m-%d')   ]]>
+        </if>
+        <if test="endCTime!=null and endCTime!=''">
+          <![CDATA[  and DATE_FORMAT(ckf.create_time, '%Y-%m-%d') <= DATE_FORMAT(#{endCTime}, '%Y-%m-%d')    ]]>
+        </if>
+        AND ckf.del_flag="0"
+        AND ckm.del_flag="0"
+      </where>
+  </select>
+
+  <!--查询资金详情-->
+  <select id="selectDetail" parameterType="java.lang.String" resultType="java.util.Map">
+    SELECT
+      ckm.nick_name AS nickName,
+      ckf.serial_number AS serialNumber,
+      ckf.money AS money,
+      ckf.status AS status,
+      date_format(ckf.create_time ,'%Y-%m-%d %H:%i:%s' ) AS showTime
+      FROM cb_kuaidan_fund ckf
+      LEFT JOIN cb_kuaidan_member ckm ON ckm.id=ckf.member_id
+      WHERE ckf.id=#{id}
+      AND ckf.del_flag="0"
+      AND ckm.del_flag="0"
+  </select>
+
+
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from cb_kuaidan_fund
+    where id = #{id,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
+    delete from cb_kuaidan_fund
+    where id = #{id,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.kuaidan.entity.Fund" >
+    insert into cb_kuaidan_fund (id, create_time, del_flag, 
+      money, type, member_id, 
+      serial_number)
+    values (#{id,jdbcType=VARCHAR}, #{createTime,jdbcType=TIMESTAMP}, #{delFlag,jdbcType=VARCHAR}, 
+      #{money,jdbcType=DECIMAL}, #{type,jdbcType=VARCHAR}, #{memberId,jdbcType=VARCHAR}, 
+      #{serialNumber,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.kuaidan.entity.Fund" >
+    insert into cb_kuaidan_fund
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="createTime != null" >
+        create_time,
+      </if>
+      <if test="delFlag != null" >
+        del_flag,
+      </if>
+      <if test="money != null" >
+        money,
+      </if>
+      <if test="type != null" >
+        type,
+      </if>
+      <if test="memberId != null" >
+        member_id,
+      </if>
+      <if test="serialNumber != null" >
+        serial_number,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null" >
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="delFlag != null" >
+        #{delFlag,jdbcType=VARCHAR},
+      </if>
+      <if test="money != null" >
+        #{money,jdbcType=DECIMAL},
+      </if>
+      <if test="type != null" >
+        #{type,jdbcType=VARCHAR},
+      </if>
+      <if test="memberId != null" >
+        #{memberId,jdbcType=VARCHAR},
+      </if>
+      <if test="serialNumber != null" >
+        #{serialNumber,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.kuaidan.entity.Fund" >
+    update cb_kuaidan_fund
+    <set >
+      <if test="createTime != null" >
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="delFlag != null" >
+        del_flag = #{delFlag,jdbcType=VARCHAR},
+      </if>
+      <if test="money != null" >
+        money = #{money,jdbcType=DECIMAL},
+      </if>
+      <if test="type != null" >
+        type = #{type,jdbcType=VARCHAR},
+      </if>
+      <if test="memberId != null" >
+        member_id = #{memberId,jdbcType=VARCHAR},
+      </if>
+      <if test="serialNumber != null" >
+        serial_number = #{serialNumber,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.kuaidan.entity.Fund" >
+    update cb_kuaidan_fund
+    set create_time = #{createTime,jdbcType=TIMESTAMP},
+      del_flag = #{delFlag,jdbcType=VARCHAR},
+      money = #{money,jdbcType=DECIMAL},
+      type = #{type,jdbcType=VARCHAR},
+      member_id = #{memberId,jdbcType=VARCHAR},
+      serial_number = #{serialNumber,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=VARCHAR}
+  </update>
+</mapper>

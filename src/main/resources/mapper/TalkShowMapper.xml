@@ -1,0 +1,215 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.kuaidan.mapper.TalkShowMapper" >
+  <resultMap id="BaseResultMap" type="com.kuaidan.entity.TalkShow" >
+    <id column="id" property="id" jdbcType="VARCHAR" />
+    <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+    <result column="del_flag" property="delFlag" jdbcType="VARCHAR" />
+    <result column="is_start_using" property="isStartUsing" jdbcType="VARCHAR" />
+    <result column="headline" property="headline" jdbcType="VARCHAR" />
+    <result column="content" property="content" jdbcType="VARCHAR" />
+    <result column="is_overhead" property="isOverhead" jdbcType="VARCHAR" />
+    <result column="support_count" property="supportCount" jdbcType="INTEGER" />
+    <result column="nonsupport_count" property="nonsupportCount" jdbcType="INTEGER" />
+    <result column="collect_count" property="collectCount" jdbcType="INTEGER" />
+    <result column="share_count" property="shareCount" jdbcType="INTEGER" />
+    <result column="member_id" property="memberId" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, create_time, del_flag, is_start_using, headline, content, is_overhead, support_count, 
+    nonsupport_count, collect_count, share_count, member_id
+  </sql>
+  <select id="selectOverheadCount" parameterType="java.lang.String" resultType="java.lang.Integer">
+    select count(*) from cb_kuaidan_talk_show where is_overhead ="0"
+  </select>
+
+  <select id="selectAll" parameterType="java.util.Map" resultType="java.util.Map">
+   SELECT a.id,a.create_time as createTime,b.nick_name as nickName,a.support_count as supportCount,a.headline,a.content,
+   a.nonsupport_count as nonsupportCount,a.is_overhead as isOverhead,a.is_start_using as isStartUsing,a.share_count as shareCount,
+    a.collect_count as collectCount
+  from cb_kuaidan_talk_show a
+  LEFT JOIN cb_kuaidan_member b on a.member_id = b.id
+  where a.del_flag = "0"
+   <if test="nickName != null and nickName != ''">
+     and b.nick_name = #{nickName,jdbcType=VARCHAR}
+   </if>
+    <if test="isStartUsing != null and isStartUsing != ''">
+      and a.is_start_using = #{isStartUsing,jdbcType=VARCHAR}
+    </if>
+    <if test="isOverhead != null and isOverhead != ''">
+      and a.is_overhead = #{isOverhead,jdbcType=VARCHAR}
+    </if>
+    <if test="beginTime !=null ">
+      and  a.create_time &gt; #{beginTime,jdbcType=TIMESTAMP}
+    </if>
+    <if test="endTime !=null ">
+      and  a.create_time &lt; #{endTime,jdbcType=TIMESTAMP}
+    </if>
+    order by a.create_time desc
+  </select>
+
+  <select id="selectDetailById"  parameterType="java.util.Map" resultType="java.util.Map">
+    SELECT a.id,a.create_time as createTime,b.nick_name as nickName,a.support_count as supportCount,
+   a.headline,a.content,a.collect_count as collectCount,a.share_count as shareCount,
+   a.nonsupport_count as nonsupportCount,a.is_overhead as isOverhead,a.is_start_using as IsStartUsing
+   from cb_kuaidan_talk_show a
+   LEFT JOIN cb_kuaidan_member b on a.member_id = b.id
+   where a.id = #{id,jdbcType=VARCHAR}
+  </select>
+
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from cb_kuaidan_talk_show
+    where id = #{id,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
+    delete from cb_kuaidan_talk_show
+    where id = #{id,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.kuaidan.entity.TalkShow" >
+    insert into cb_kuaidan_talk_show (id, create_time, del_flag, 
+      is_start_using, headline, content, 
+      is_overhead, support_count, nonsupport_count, 
+      collect_count, share_count, member_id
+      )
+    values (#{id,jdbcType=VARCHAR}, #{createTime,jdbcType=TIMESTAMP}, #{delFlag,jdbcType=VARCHAR}, 
+      #{isStartUsing,jdbcType=VARCHAR}, #{headline,jdbcType=VARCHAR}, #{content,jdbcType=VARCHAR}, 
+      #{isOverhead,jdbcType=VARCHAR}, #{supportCount,jdbcType=INTEGER}, #{nonsupportCount,jdbcType=INTEGER}, 
+      #{collectCount,jdbcType=INTEGER}, #{shareCount,jdbcType=INTEGER}, #{memberId,jdbcType=VARCHAR}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.kuaidan.entity.TalkShow" >
+    insert into cb_kuaidan_talk_show
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="createTime != null" >
+        create_time,
+      </if>
+      <if test="delFlag != null" >
+        del_flag,
+      </if>
+      <if test="isStartUsing != null" >
+        is_start_using,
+      </if>
+      <if test="headline != null" >
+        headline,
+      </if>
+      <if test="content != null" >
+        content,
+      </if>
+      <if test="isOverhead != null" >
+        is_overhead,
+      </if>
+      <if test="supportCount != null" >
+        support_count,
+      </if>
+      <if test="nonsupportCount != null" >
+        nonsupport_count,
+      </if>
+      <if test="collectCount != null" >
+        collect_count,
+      </if>
+      <if test="shareCount != null" >
+        share_count,
+      </if>
+      <if test="memberId != null" >
+        member_id,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null" >
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="delFlag != null" >
+        #{delFlag,jdbcType=VARCHAR},
+      </if>
+      <if test="isStartUsing != null" >
+        #{isStartUsing,jdbcType=VARCHAR},
+      </if>
+      <if test="headline != null" >
+        #{headline,jdbcType=VARCHAR},
+      </if>
+      <if test="content != null" >
+        #{content,jdbcType=VARCHAR},
+      </if>
+      <if test="isOverhead != null" >
+        #{isOverhead,jdbcType=VARCHAR},
+      </if>
+      <if test="supportCount != null" >
+        #{supportCount,jdbcType=INTEGER},
+      </if>
+      <if test="nonsupportCount != null" >
+        #{nonsupportCount,jdbcType=INTEGER},
+      </if>
+      <if test="collectCount != null" >
+        #{collectCount,jdbcType=INTEGER},
+      </if>
+      <if test="shareCount != null" >
+        #{shareCount,jdbcType=INTEGER},
+      </if>
+      <if test="memberId != null" >
+        #{memberId,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.kuaidan.entity.TalkShow" >
+    update cb_kuaidan_talk_show
+    <set >
+      <if test="createTime != null" >
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="delFlag != null" >
+        del_flag = #{delFlag,jdbcType=VARCHAR},
+      </if>
+      <if test="isStartUsing != null" >
+        is_start_using = #{isStartUsing,jdbcType=VARCHAR},
+      </if>
+      <if test="headline != null" >
+        headline = #{headline,jdbcType=VARCHAR},
+      </if>
+      <if test="content != null" >
+        content = #{content,jdbcType=VARCHAR},
+      </if>
+      <if test="isOverhead != null" >
+        is_overhead = #{isOverhead,jdbcType=VARCHAR},
+      </if>
+      <if test="supportCount != null" >
+        support_count = #{supportCount,jdbcType=INTEGER},
+      </if>
+      <if test="nonsupportCount != null" >
+        nonsupport_count = #{nonsupportCount,jdbcType=INTEGER},
+      </if>
+      <if test="collectCount != null" >
+        collect_count = #{collectCount,jdbcType=INTEGER},
+      </if>
+      <if test="shareCount != null" >
+        share_count = #{shareCount,jdbcType=INTEGER},
+      </if>
+      <if test="memberId != null" >
+        member_id = #{memberId,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.kuaidan.entity.TalkShow" >
+    update cb_kuaidan_talk_show
+    set create_time = #{createTime,jdbcType=TIMESTAMP},
+      del_flag = #{delFlag,jdbcType=VARCHAR},
+      is_start_using = #{isStartUsing,jdbcType=VARCHAR},
+      headline = #{headline,jdbcType=VARCHAR},
+      content = #{content,jdbcType=VARCHAR},
+      is_overhead = #{isOverhead,jdbcType=VARCHAR},
+      support_count = #{supportCount,jdbcType=INTEGER},
+      nonsupport_count = #{nonsupportCount,jdbcType=INTEGER},
+      collect_count = #{collectCount,jdbcType=INTEGER},
+      share_count = #{shareCount,jdbcType=INTEGER},
+      member_id = #{memberId,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=VARCHAR}
+  </update>
+</mapper>

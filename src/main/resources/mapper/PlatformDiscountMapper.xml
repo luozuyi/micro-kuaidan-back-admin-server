@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.kuaidan.mapper.PlatformDiscountMapper" >
+  <resultMap id="BaseResultMap" type="com.kuaidan.entity.PlatformDiscount" >
+    <id column="id" property="id" jdbcType="VARCHAR" />
+    <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+    <result column="del_flag" property="delFlag" jdbcType="VARCHAR" />
+    <result column="service_cycle_config_id" property="serviceCycleConfigId" jdbcType="VARCHAR" />
+    <result column="service_num_config_id" property="serviceNumConfigId" jdbcType="VARCHAR" />
+    <result column="discount_rate" property="discountRate" jdbcType="DECIMAL" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, create_time, del_flag, service_cycle_config_id, service_num_config_id, discount_rate
+  </sql>
+
+  <!--查询所有的折扣规则-->
+  <select id="selectAll" parameterType="java.util.Map" resultType="java.util.Map">
+    SELECT a.id id,a.create_time createTime,a.del_flag delFlag,b.type cycleType,c.type numType,discount_rate discountRate
+FROM `cb_kuaidan_platform_discount` AS a
+LEFT JOIN `cb_kuaidan_platform_service_cycle_config` AS b  ON a.service_cycle_config_id=b.id
+LEFT JOIN `cb_kuaidan_platform_service_num_config` AS c ON a.service_num_config_id= c.id
+WHERE a.del_flag = "0"
+  </select>
+
+  <!--查询一个规则详情-->
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    a.id,a.create_time createTime,a.del_flag delFlag,a.service_cycle_config_id serviceCycleConfigId,a.service_num_config_id serviceNumConfigId,a.discount_rate discountRate,
+    b.type cycleType , c.type numType
+    from cb_kuaidan_platform_discount as a
+    left join cb_kuaidan_platform_service_cycle_config as b on a.service_cycle_config_id=b.id
+    left join cb_kuaidan_platform_service_num_config as c on a.service_num_config_id=c.id
+    where a.id = #{id,jdbcType=VARCHAR}
+  </select>
+  <!--根据服务周期和服务次数查询对应折扣-->
+  <select id="selectDiscountByType" parameterType="java.util.Map" resultType="java.math.BigDecimal">
+    SELECT
+      discount_rate
+      FROM cb_kuaidan_platform_discount
+      WHERE service_cycle_config_id=#{serviceCycleConfigId}
+      AND service_num_config_id=#{serviceNumConfigId}
+      AND del_flag="0"
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
+    delete from cb_kuaidan_platform_discount
+    where id = #{id,jdbcType=VARCHAR}
+  </delete>
+
+  <insert id="insert" parameterType="com.kuaidan.entity.PlatformDiscount" >
+    insert into cb_kuaidan_platform_discount (id, create_time, del_flag, 
+      service_cycle_config_id, service_num_config_id, 
+      discount_rate)
+    values (#{id,jdbcType=VARCHAR}, #{createTime,jdbcType=TIMESTAMP}, #{delFlag,jdbcType=VARCHAR}, 
+      #{serviceCycleConfigId,jdbcType=VARCHAR}, #{serviceNumConfigId,jdbcType=VARCHAR}, 
+      #{discountRate,jdbcType=DECIMAL})
+  </insert>
+
+  <!--插入折扣规则-->
+  <insert id="insertSelective" parameterType="java.util.Map" >
+    insert into cb_kuaidan_platform_discount
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="createTime != null" >
+        create_time,
+      </if>
+      <if test="delFlag != null" >
+        del_flag,
+      </if>
+      <if test="serviceCycleConfigId != null" >
+        service_cycle_config_id,
+      </if>
+      <if test="serviceNumConfigId != null" >
+        service_num_config_id,
+      </if>
+      <if test="discountRate != null" >
+        discount_rate,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null" >
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="delFlag != null" >
+        #{delFlag,jdbcType=VARCHAR},
+      </if>
+      <if test="serviceCycleConfigId != null" >
+        #{serviceCycleConfigId,jdbcType=VARCHAR},
+      </if>
+      <if test="serviceNumConfigId != null" >
+        #{serviceNumConfigId,jdbcType=VARCHAR},
+      </if>
+      <if test="discountRate != null" >
+        #{discountRate,jdbcType=DECIMAL},
+      </if>
+    </trim>
+  </insert>
+
+  <!--更新折扣规则-->
+  <update id="updateByPrimaryKeySelective" parameterType="java.util.Map" >
+    update cb_kuaidan_platform_discount
+    <set >
+      <if test="createTime != null" >
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="delFlag != null" >
+        del_flag = #{delFlag,jdbcType=VARCHAR},
+      </if>
+      <if test="serviceCycleConfigId != null" >
+        service_cycle_config_id = #{serviceCycleConfigId,jdbcType=VARCHAR},
+      </if>
+      <if test="serviceNumConfigId != null" >
+        service_num_config_id = #{serviceNumConfigId,jdbcType=VARCHAR},
+      </if>
+      <if test="discountRate != null" >
+        discount_rate = #{discountRate,jdbcType=DECIMAL},
+      </if>
+    </set>
+    where id = #{id,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.kuaidan.entity.PlatformDiscount" >
+    update cb_kuaidan_platform_discount
+    set create_time = #{createTime,jdbcType=TIMESTAMP},
+      del_flag = #{delFlag,jdbcType=VARCHAR},
+      service_cycle_config_id = #{serviceCycleConfigId,jdbcType=VARCHAR},
+      service_num_config_id = #{serviceNumConfigId,jdbcType=VARCHAR},
+      discount_rate = #{discountRate,jdbcType=DECIMAL}
+    where id = #{id,jdbcType=VARCHAR}
+  </update>
+</mapper>
