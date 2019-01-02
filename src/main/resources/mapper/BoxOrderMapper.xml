@@ -16,6 +16,15 @@
     id, create_time, del_flag, service_order_id, status, send_time, box_config_id, box_order_number,send_person
   </sql>
 
+  <!--查询用户的盒子数了-->
+  <select id="selectMemberBoxCount" resultType="java.lang.Integer" parameterType="java.lang.String">
+    SELECT
+      COUNT(*)
+    FROM cb_kuaidan_box_order ckbo
+    RIGHT JOIN cb_kuaidan_service_order ckso ON ckso.id=ckbo.service_order_id AND ckso.del_flag="0"
+    WHERE ckso.member_id=#{memberId}
+    AND ckbo.del_flag="0"
+  </select>
   <!--查询距离当前十天的已发货盒子订单-->
   <select id="selectBoxOrderBeforeTenDays" resultMap="BaseResultMap">
     SELECT

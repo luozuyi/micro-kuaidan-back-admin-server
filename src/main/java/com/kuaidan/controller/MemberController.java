@@ -21,4 +21,14 @@ public class MemberController {
     public Result pageList(Integer pageNum, Integer pageSize) {
         return memberService.pageList(pageNum, pageSize);
     }
+
+    /**
+     * 查询详情
+     * @param id 主键id
+     * @return
+     */
+    @GetMapping(value = "v1/auth/members/id")
+    public Result detail(String id) {
+        return memberService.detail(id);
+    }
 }

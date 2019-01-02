@@ -11,6 +11,9 @@
   <sql id="Base_Column_List" >
     id, create_time, del_flag, talk_show_id, member_id
   </sql>
+  <select id="selectMemberTalkCollectShowCount" parameterType="java.lang.String" resultType="java.lang.Integer">
+    select count(*) from cb_kuaidan_talk_show_collect where member_id = #{memberId,jdbcType=VARCHAR}
+  </select>
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
     select 
     <include refid="Base_Column_List" />

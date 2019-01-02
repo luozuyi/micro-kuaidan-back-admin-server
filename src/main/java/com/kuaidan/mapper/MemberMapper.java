@@ -19,5 +19,9 @@ public interface MemberMapper extends BaseMapper<Member,String>{
 
     int updateByPrimaryKey(Member record);
 
+    /**
+     * 查询授权登录会员数量
+     * @return
+     */
     Integer selectAllMemberCount();
 }

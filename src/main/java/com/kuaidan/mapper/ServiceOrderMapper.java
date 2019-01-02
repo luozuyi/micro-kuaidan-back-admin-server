@@ -4,6 +4,7 @@ import com.kuaidan.entity.ServiceOrder;
 import org.apache.ibatis.annotations.Mapper;
 import org.springframework.stereotype.Repository;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
 
@@ -32,4 +33,18 @@ public interface ServiceOrderMapper {
      * @return
      */
     Integer selectServiceOrderCountByType(String status);
+
+    /**
+     * 根据状态查询单个会员的服务订单数
+     * @param map
+     * @return
+     */
+    Integer selectCountByStatus(Map<String,Object> map);
+
+    /**
+     * 查询用户订单总金额
+     * @param memberId
+     * @return
+     */
+    BigDecimal selectTotalPrice(String memberId);
 }

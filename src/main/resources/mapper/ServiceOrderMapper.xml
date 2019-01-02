@@ -14,6 +14,22 @@
   <sql id="Base_Column_List" >
     id, create_time, del_flag, status, price, member_id, service_order_number, address_id
   </sql>
+  <select id="selectTotalPrice" resultType="java.math.BigDecimal" parameterType="java.lang.String">
+    select IFNULL(sum(price),0) as totalPrice FROM cb_kuaidan_service_order WHERE member_id = #{memberId,jdbcType=VARCHAR}
+    and (status = "1" or status = "2")
+  </select>
+  <!--根据status查询服务订单数量-->
+  <select id="selectCountByStatus" resultType="java.lang.Integer" parameterType="java.util.Map">
+    SELECT
+    COUNT(*)
+    FROM cb_kuaidan_service_order
+    <where>
+      member_id=#{memberId}
+      <if test="status!=null and status!=''">AND status=#{status}</if>
+      AND del_flag="0"
+      AND status<![CDATA[!= ]]>"3"
+    </where>
+  </select>
 
   <!--服务订单数量-->
   <select id="selectServiceOrderCountByType" resultType="java.lang.Integer" parameterType="java.lang.String">

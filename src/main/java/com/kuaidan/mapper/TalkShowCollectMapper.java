@@ -18,4 +18,7 @@ public interface TalkShowCollectMapper {
     int updateByPrimaryKeySelective(TalkShowCollect record);
 
     int updateByPrimaryKey(TalkShowCollect record);
+
+    /*查询用户快蛋说数收藏量*/
+    Integer selectMemberTalkCollectShowCount(String memberId);
 }

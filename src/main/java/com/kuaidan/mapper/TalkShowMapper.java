@@ -33,7 +33,7 @@ public interface TalkShowMapper {
      * @return
      */
     Integer selectAllCount();
-
-
+    /*查询用户快蛋说数量*/
+    Integer selectMemberTalkShowCount(String memberId);
 
 }

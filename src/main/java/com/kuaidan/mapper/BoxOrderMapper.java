@@ -31,4 +31,11 @@ public interface BoxOrderMapper {
      * @return
      */
     List<BoxOrder> selectBoxOrderBeforeTenDays();
+
+    /**
+     * 查询用户盒子数量
+     * @param memberId
+     * @return
+     */
+    Integer selectMemberBoxCount(String memberId);
 }

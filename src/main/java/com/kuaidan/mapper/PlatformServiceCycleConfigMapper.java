@@ -15,7 +15,7 @@ public interface PlatformServiceCycleConfigMapper {
 
     PlatformServiceCycleConfig selectByPrimaryKey(String id);
 
-    String selectByType(Integer type);;//根据次数类型查询周期id
+    String selectByType(Integer type);
 
     int updateByPrimaryKeySelective(PlatformServiceCycleConfig record);
 

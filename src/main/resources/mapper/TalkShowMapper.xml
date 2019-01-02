@@ -19,6 +19,10 @@
     id, create_time, del_flag, is_start_using, headline, content, is_overhead, support_count, 
     nonsupport_count, collect_count, share_count, member_id
   </sql>
+  <select id="selectMemberTalkShowCount" parameterType="java.lang.String" resultType="java.lang.Integer">
+    select count(*) from cb_kuaidan_talk_show where member_id = #{memberId,jdbcType=VARCHAR}
+  </select>
+
   <select id="selectOverheadCount" parameterType="java.lang.String" resultType="java.lang.Integer">
     select count(*) from cb_kuaidan_talk_show where is_overhead ="0"
   </select>

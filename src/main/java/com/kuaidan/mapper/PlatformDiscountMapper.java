@@ -17,15 +17,15 @@ public interface PlatformDiscountMapper {
 
     int insert(PlatformDiscount record);
 
-    int insertSelective(Map<String,Object> map);//添加折扣规则
+    int insertSelective(Map<String,Object> map);
 
-    PlatformDiscount selectByPrimaryKey(String id);//查询一个规则详情
+    PlatformDiscount selectByPrimaryKey(String id);
 
-    List<ModelMap> selectAll();//查询所有的折扣规则
+    List<ModelMap> selectAll();
 
-    BigDecimal selectDiscountByType(Map<String,Object> map);//根据类型查询折扣
+    BigDecimal selectDiscountByType(Map<String,Object> map);
 
-    int updateByPrimaryKeySelective(Map<String,Object> map);//编辑折扣规则
+    int updateByPrimaryKeySelective(Map<String,Object> map);
 
     int updateByPrimaryKey(PlatformDiscount record);
 
