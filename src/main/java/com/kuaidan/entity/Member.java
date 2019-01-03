@@ -33,6 +33,10 @@ public class Member implements Serializable{
      * openid 第三方id
      */
     private String openId;
+    /**
+     * 微信头像
+     */
+    private String headImage;
 
     public String getId() {
         return id;
@@ -88,5 +92,13 @@ public class Member implements Serializable{
 
     public void setOpenId(String openId) {
         this.openId = openId == null ? null : openId.trim();
+    }
+
+    public String getHeadImage() {
+        return headImage;
+    }
+
+    public void setHeadImage(String headImage) {
+        this.headImage = headImage == null ? null : headImage.trim();
     }
 }

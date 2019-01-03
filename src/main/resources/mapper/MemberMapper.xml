@@ -9,9 +9,10 @@
     <result column="last_login_time" jdbcType="TIMESTAMP" property="lastLoginTime" />
     <result column="login_count" jdbcType="BIGINT" property="loginCount" />
     <result column="open_id" jdbcType="VARCHAR" property="openId" />
+    <result column="head_image" jdbcType="VARCHAR" property="headImage" />
   </resultMap>
   <sql id="Base_Column_List">
-    id, del_flag, create_time, nick_name, last_login_time, login_count, open_id
+    id, del_flag, create_time, nick_name, last_login_time, login_count, open_id, head_image
   </sql>
   <!--授权登录的会员总数-->
   <select id="selectAllMemberCount" resultType="java.lang.Integer">
@@ -38,10 +39,10 @@
   <insert id="insert" parameterType="com.kuaidan.entity.Member">
     insert into cb_kuaidan_member (id, del_flag, create_time, 
       nick_name, last_login_time, login_count, 
-      open_id)
+      open_id, head_image)
     values (#{id,jdbcType=VARCHAR}, #{delFlag,jdbcType=VARCHAR}, #{createTime,jdbcType=TIMESTAMP}, 
       #{nickName,jdbcType=VARCHAR}, #{lastLoginTime,jdbcType=TIMESTAMP}, #{loginCount,jdbcType=BIGINT}, 
-      #{openId,jdbcType=VARCHAR})
+      #{openId,jdbcType=VARCHAR}, #{headImage,jdbcType=VARCHAR})
   </insert>
   <insert id="insertSelective" parameterType="com.kuaidan.entity.Member">
     insert into cb_kuaidan_member
@@ -67,6 +68,9 @@
       <if test="openId != null">
         open_id,
       </if>
+      <if test="headImage != null">
+        head_image,
+      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
       <if test="id != null">
@@ -89,6 +93,9 @@
       </if>
       <if test="openId != null">
         #{openId,jdbcType=VARCHAR},
+      </if>
+      <if test="headImage != null">
+        #{headImage,jdbcType=VARCHAR},
       </if>
     </trim>
   </insert>
@@ -113,6 +120,9 @@
       <if test="openId != null">
         open_id = #{openId,jdbcType=VARCHAR},
       </if>
+      <if test="headImage != null">
+        head_image = #{headImage,jdbcType=VARCHAR},
+      </if>
     </set>
     where id = #{id,jdbcType=VARCHAR}
   </update>
@@ -123,7 +133,8 @@
       nick_name = #{nickName,jdbcType=VARCHAR},
       last_login_time = #{lastLoginTime,jdbcType=TIMESTAMP},
       login_count = #{loginCount,jdbcType=BIGINT},
-      open_id = #{openId,jdbcType=VARCHAR}
+      open_id = #{openId,jdbcType=VARCHAR},
+      head_image = #{headImage,jdbcType=VARCHAR}
     where id = #{id,jdbcType=VARCHAR}
   </update>
 </mapper>
