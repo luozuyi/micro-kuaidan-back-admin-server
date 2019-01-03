@@ -141,6 +141,10 @@ public class MemberServiceImpl extends BaseServiceImpl<Member,String> implements
                 /*查询用户快蛋说收藏数量*/
                 Integer memberTalkCollectShowCount = talkShowCollectMapper.selectMemberTalkCollectShowCount(id);
                 member.put("memberTalkCollectShowCount",memberTalkCollectShowCount);
+
+                /*订单总额*/
+                BigDecimal selectTotalPrice = serviceOrderMapper.selectTotalPrice(id);
+                member.put("totalPrice",selectTotalPrice);
             }
             PageInfo<Map<String,Object>> page = new PageInfo<>(memberList);
             result.setData(page);

@@ -11,6 +11,16 @@
     <result column="open_id" jdbcType="VARCHAR" property="openId" />
     <result column="head_image" jdbcType="VARCHAR" property="headImage" />
   </resultMap>
+  <resultMap id="BaseMap" type="java.util.Map">
+    <id column="id" jdbcType="VARCHAR" property="id" />
+    <result column="del_flag" jdbcType="VARCHAR" property="delFlag" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="nick_name" jdbcType="VARCHAR" property="nickName" />
+    <result column="last_login_time" jdbcType="TIMESTAMP" property="lastLoginTime" />
+    <result column="login_count" jdbcType="BIGINT" property="loginCount" />
+    <result column="open_id" jdbcType="VARCHAR" property="openId" />
+    <result column="head_image" jdbcType="VARCHAR" property="headImage" />
+  </resultMap>
   <sql id="Base_Column_List">
     id, del_flag, create_time, nick_name, last_login_time, login_count, open_id, head_image
   </sql>
@@ -32,7 +42,7 @@
     from cb_kuaidan_member
     where del_flag = "0"
   </select>
-  <select id="selectAllBySelection" resultType="java.util.Map" parameterType="java.util.Map">
+  <select id="selectAllBySelection" resultMap="BaseMap" parameterType="java.util.Map">
     select
     <include refid="Base_Column_List" />
     from cb_kuaidan_member
