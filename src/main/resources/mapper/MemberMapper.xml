@@ -32,6 +32,22 @@
     from cb_kuaidan_member
     where del_flag = "0"
   </select>
+  <select id="selectAllBySelection" resultType="java.util.Map" parameterType="java.util.Map">
+    select
+    <include refid="Base_Column_List" />
+    from cb_kuaidan_member
+    where del_flag = "0"
+    <if test="nickName != null and nickName != ''">
+      and nick_name = #{nickName,jdbcType=VARCHAR}
+    </if>
+    <if test="startTime != null ">
+      and create_time >= #{startTime,jdbcType=TIMESTAMP}
+    </if>
+    <if test="endTime != null ">
+      and create_time &lt; #{endTime,jdbcType=TIMESTAMP}
+    </if>
+  </select>
+
   <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
     delete from cb_kuaidan_member
     where id = #{id,jdbcType=VARCHAR}
