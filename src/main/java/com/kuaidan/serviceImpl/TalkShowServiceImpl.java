@@ -3,7 +3,9 @@ package com.kuaidan.serviceImpl;
 import com.github.pagehelper.PageInfo;
 import com.github.tobato.fastdfs.service.FastFileStorageClient;
 import com.kuaidan.entity.TalkShow;
+import com.kuaidan.entity.TalkShowCollect;
 import com.kuaidan.entity.TalkShowImage;
+import com.kuaidan.mapper.TalkShowCollectMapper;
 import com.kuaidan.mapper.TalkShowMapper;
 import com.kuaidan.mapper.TalkShowImageMapper;
 import com.kuaidan.service.TalkShowService;
@@ -28,6 +30,8 @@ public class TalkShowServiceImpl implements TalkShowService {
     private TalkShowMapper talkShowMapper;
     @Autowired
     private TalkShowImageMapper talkShowImageMapper;
+    @Autowired
+    private TalkShowCollectMapper talkShowCollectMapper;
 
 
 
@@ -210,6 +214,14 @@ public class TalkShowServiceImpl implements TalkShowService {
                 }
                 talkShow.setIsStartUsing("0");
                 talkShowMapper.updateByPrimaryKeySelective(talkShow);
+                List<TalkShowCollect> collects = talkShowCollectMapper.selectByTalkShowId(id);
+                if(collects != null || collects.size() > 0){
+                    for (TalkShowCollect collect :collects){
+                        TalkShowCollect talkShowCollect = talkShowCollectMapper.selectByPrimaryKey(collect.getId());
+                        talkShowCollect.setDelFlag("0");
+                        talkShowCollectMapper.updateByPrimaryKeySelective(talkShowCollect);
+                    }
+                }
                 code = Constants.SUCCESS;
                 msg = "启用成功";
             }
@@ -250,6 +262,14 @@ public class TalkShowServiceImpl implements TalkShowService {
                 }
                 talkShow.setIsStartUsing("1");
                 talkShowMapper.updateByPrimaryKeySelective(talkShow);
+                List<TalkShowCollect> collects = talkShowCollectMapper.selectByTalkShowId(id);
+                if(collects != null || collects.size() > 0){
+                    for (TalkShowCollect collect :collects){
+                        TalkShowCollect talkShowCollect = talkShowCollectMapper.selectByPrimaryKey(collect.getId());
+                        talkShowCollect.setDelFlag("1");
+                        talkShowCollectMapper.updateByPrimaryKeySelective(talkShowCollect);
+                    }
+                }
                 code = Constants.SUCCESS;
                 msg = "禁用成功";
             }
@@ -290,6 +310,14 @@ public class TalkShowServiceImpl implements TalkShowService {
                 }
                 talkShow.setDelFlag("1");
                 talkShowMapper.updateByPrimaryKeySelective(talkShow);
+                List<TalkShowCollect> collects = talkShowCollectMapper.selectByTalkShowId(id);
+                if(collects != null || collects.size() > 0){
+                    for (TalkShowCollect collect :collects){
+                        TalkShowCollect talkShowCollect = talkShowCollectMapper.selectByPrimaryKey(collect.getId());
+                        talkShowCollect.setDelFlag("1");
+                        talkShowCollectMapper.updateByPrimaryKeySelective(talkShowCollect);
+                    }
+                }
                 code = Constants.SUCCESS;
                 msg = "删除成功";
             }
@@ -323,6 +351,14 @@ public class TalkShowServiceImpl implements TalkShowService {
                 TalkShow talkShow = talkShowMapper.selectByPrimaryKey(id);
                 talkShow.setDelFlag("1");
                 talkShowMapper.updateByPrimaryKeySelective(talkShow);
+                List<TalkShowCollect> collects = talkShowCollectMapper.selectByTalkShowId(id);
+                if(collects != null || collects.size() > 0){
+                    for (TalkShowCollect collect :collects){
+                        TalkShowCollect talkShowCollect = talkShowCollectMapper.selectByPrimaryKey(collect.getId());
+                        talkShowCollect.setDelFlag("1");
+                        talkShowCollectMapper.updateByPrimaryKeySelective(talkShowCollect);
+                    }
+                }
                 code = Constants.SUCCESS;
                 msg = "删除成功";
             }

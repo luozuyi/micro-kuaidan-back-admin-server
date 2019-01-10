@@ -98,6 +98,7 @@ public class BoxOrderServiceImpl implements BoxOrderService {
                     //新增盒子快递信息
                     boxLogisticsMapper.insertSelective(boxLogistics);
                     boxOrder.setSendPerson(name);
+                    boxOrder.setStatus("1");
                     SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
                     boxOrder.setSendTime(sdf.parse(sendTime));
                     //修改盒子订单信息

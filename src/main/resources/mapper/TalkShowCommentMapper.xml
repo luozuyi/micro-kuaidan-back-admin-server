@@ -16,12 +16,12 @@
 
   <select id="selectAllComment" parameterType="java.util.Map" resultType="java.util.Map">
     SELECT a.id,a.talk_show_id as takeShowId,c.nick_name as nickName,d.is_support as isSupport,
-   a.content,a.is_start_using as isStartUsing,a.create_time as createTime
+   a.content,a.is_start_using as isStartUsing,DATE_FORMAT(a.create_time ,'%Y-%m-%d %H:%i:%s') as createTime
    FROM cb_kuaidan_talk_show_comment a
    LEFT JOIN cb_kuaidan_talk_show b on b.id = a.talk_show_id
    LEFT JOIN cb_kuaidan_member c on c.id = b.member_id
    LEFT JOIN cb_kuaidan_talk_show_opinion d on d.talk_show_id = a.talk_show_id and d.member_id = a.member_id
-   where a.talk_show_id = #{talkShowId,jdbcType=VARCHAR}
+   where a.del_flag = "0" and a.talk_show_id = #{talkShowId,jdbcType=VARCHAR}
    <if test="nickName != null and nickName != ''">
      and c.nick_name =  #{nickName,jdbcType=VARCHAR}
    </if>

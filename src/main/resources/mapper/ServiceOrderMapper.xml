@@ -81,7 +81,7 @@
       IFNULL(b.has_send_box_, 0)AS hasSendBoxCount,
       IFNULL(c.no_send_box_count, 0)AS noSendBoxCount
       FROM cb_kuaidan_service_order ckso
-      LEFT JOIN cb_kuaidan_service_order_address cksoa ON ckso.address_id=cksoa.id
+      LEFT JOIN cb_kuaidan_service_order_address cksoa ON ckso.address_id=cksoa.id AND cksoa.del_flag="0"
       LEFT JOIN (SELECT service_order_id, COUNT(0) AS all_box_count FROM cb_kuaidan_box_order WHERE del_flag="0"
                 GROUP BY service_order_id) AS a ON a.service_order_id=ckso.id
       LEFT JOIN (SELECT service_order_id, COUNT(0) AS has_send_box_ FROM cb_kuaidan_box_order WHERE del_flag="0"
@@ -101,7 +101,6 @@
           <![CDATA[  and DATE_FORMAT(ckso.create_time, '%Y-%m-%d') <= DATE_FORMAT(#{endCTime}, '%Y-%m-%d')    ]]>
         </if>
         AND ckso.del_flag="0"
-        AND cksoa.del_flag="0"
         ORDER BY ckso.create_time DESC
       </where>
   </select>

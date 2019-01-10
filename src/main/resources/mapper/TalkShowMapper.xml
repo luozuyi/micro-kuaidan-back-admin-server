@@ -28,12 +28,12 @@
   </select>
 
   <select id="selectAll" parameterType="java.util.Map" resultType="java.util.Map">
-   SELECT a.id,a.create_time as createTime,b.nick_name as nickName,a.support_count as supportCount,a.headline,a.content,
-   a.nonsupport_count as nonsupportCount,a.is_overhead as isOverhead,a.is_start_using as isStartUsing,a.share_count as shareCount,
+   SELECT a.id,DATE_FORMAT(a.create_time ,'%Y-%m-%d %H:%i:%s') as createTime,b.nick_name as nickName,a.support_count as supportCount,a.headline,a.content,
+    a.nonsupport_count as nonsupportCount,a.is_overhead as isOverhead,a.is_start_using as isStartUsing,a.share_count as shareCount,
     a.collect_count as collectCount
-  from cb_kuaidan_talk_show a
-  LEFT JOIN cb_kuaidan_member b on a.member_id = b.id
-  where a.del_flag = "0"
+    from cb_kuaidan_talk_show a
+    LEFT JOIN cb_kuaidan_member b on a.member_id = b.id
+    where a.del_flag = "0"
    <if test="nickName != null and nickName != ''">
      and b.nick_name = #{nickName,jdbcType=VARCHAR}
    </if>
@@ -53,7 +53,7 @@
   </select>
 
   <select id="selectDetailById"  parameterType="java.util.Map" resultType="java.util.Map">
-    SELECT a.id,a.create_time as createTime,b.nick_name as nickName,a.support_count as supportCount,
+    SELECT a.id,DATE_FORMAT(a.create_time ,'%Y-%m-%d %H:%i:%s') as createTime,b.nick_name as nickName,a.support_count as supportCount,
    a.headline,a.content,a.collect_count as collectCount,a.share_count as shareCount,
    a.nonsupport_count as nonsupportCount,a.is_overhead as isOverhead,a.is_start_using as IsStartUsing
    from cb_kuaidan_talk_show a

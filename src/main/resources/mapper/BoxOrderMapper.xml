@@ -44,9 +44,11 @@
       ckbo.status AS status,
       date_format(ckbo.send_time ,'%Y-%m-%d' ) AS sendTime
       FROM cb_kuaidan_box_order ckbo
-      LEFT JOIN cb_kuaidan_platform_box_config ckpbc ON ckpbc.id=ckbo.box_config_id
-      LEFT JOIN cb_kuaidan_box_logistics ckbl ON ckbl.box_order_id=ckbo.id
+      LEFT JOIN cb_kuaidan_platform_box_config ckpbc ON ckpbc.id=ckbo.box_config_id AND ckpbc.del_flag="0"
+      LEFT JOIN cb_kuaidan_box_logistics ckbl ON ckbl.box_order_id=ckbo.id AND ckbl.del_flag="0"
+      RIGHT JOIN cb_kuaidan_service_order ckso ON ckso.id=ckbo.service_order_id AND ckso.del_flag="0"
       <where>
+        <if test="id!=null and id!=''">AND ckso.id =#{id}</if>
         <if test="boxOrderNumber!=null and boxOrderNumber!=''">AND ckbo.box_order_number =#{boxOrderNumber}</if>
         <if test="expressNumber!=null and expressNumber!=''">AND ckbl.express_number =#{expressNumber}</if>
         <if test="status!=null and status!=''">AND ckbo.status =#{status}</if>
@@ -56,7 +58,7 @@
         <if test="endCTime!=null and endCTime!=''">
           <![CDATA[  and DATE_FORMAT(ckbo.create_time, '%Y-%m-%d') <= DATE_FORMAT(#{endCTime}, '%Y-%m-%d')    ]]>
         </if>
-        AND ckbo.del_flag="0" AND ckpbc.del_flag="0" AND ckbl.del_flag="0"
+        AND ckbo.del_flag="0"
       </where>
   </select>
 
@@ -71,15 +73,15 @@
       ckbo.send_person AS sendPerson,
       ckbl.express_company AS expressCompany,
       ckbl.express_number AS expressNumber,
+      "59" AS boxPrice,
       date_format(ckbo.send_time ,'%Y-%m-%d' ) AS sendTime
       FROM cb_kuaidan_box_order ckbo
-      LEFT JOIN cb_kuaidan_service_order ckso ON ckso.id=ckbo.service_order_id
-      LEFT JOIN cb_kuaidan_platform_box_config ckpbc ON ckpbc.id=ckbo.box_config_id
-      LEFT JOIN cb_kuaidan_service_order_address cksoa ON cksoa.id=ckso.address_id
-      LEFT JOIN  cb_kuaidan_box_logistics ckbl ON ckbl.box_order_id=ckbo.id
+      LEFT JOIN cb_kuaidan_service_order ckso ON ckso.id=ckbo.service_order_id AND ckso.del_flag="0"
+      LEFT JOIN cb_kuaidan_platform_box_config ckpbc ON ckpbc.id=ckbo.box_config_id AND ckpbc.del_flag="0"
+      LEFT JOIN cb_kuaidan_service_order_address cksoa ON cksoa.id=ckso.address_id AND cksoa.del_flag="0"
+      LEFT JOIN  cb_kuaidan_box_logistics ckbl ON ckbl.box_order_id=ckbo.id  AND ckbl.del_flag="0"
       WHERE ckbo.id=#{id}
-      AND ckbo.del_flag="0" AND ckso.del_flag="0" AND ckpbc.del_flag="0"
-      AND cksoa.del_flag="0" AND ckbl.del_flag="0"
+      AND ckbo.del_flag="0"
   </select>
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
     select 

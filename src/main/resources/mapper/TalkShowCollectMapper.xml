@@ -20,6 +20,13 @@
     from cb_kuaidan_talk_show_collect
     where id = #{id,jdbcType=VARCHAR}
   </select>
+
+  <select id="selectByTalkShowId" resultMap="BaseResultMap" parameterType="java.lang.String">
+    select
+    <include refid="Base_Column_List" />
+    from cb_kuaidan_talk_show_collect
+    where  talk_show_id = #{talkShowId,jdbcType=VARCHAR}
+  </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
     delete from cb_kuaidan_talk_show_collect
     where id = #{id,jdbcType=VARCHAR}

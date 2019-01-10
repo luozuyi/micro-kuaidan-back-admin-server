@@ -4,9 +4,13 @@ import com.kuaidan.entity.TalkShowCollect;
 import org.apache.ibatis.annotations.Mapper;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
+
 @Mapper
 @Repository
 public interface TalkShowCollectMapper {
+    List<TalkShowCollect> selectByTalkShowId(String talkShowId);
+
     int deleteByPrimaryKey(String id);
 
     int insert(TalkShowCollect record);
